@@ -1,4 +1,5 @@
 .gradle
+bin/
 build
 .idea/
 .project
@@ -7,3 +8,4 @@ build
 nbactions.xml
 nb-configuration.xml
 nbproject/
+.sdkmanrc
