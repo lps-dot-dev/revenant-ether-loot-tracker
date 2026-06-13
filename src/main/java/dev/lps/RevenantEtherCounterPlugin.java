@@ -13,8 +13,11 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 @Slf4j
-@PluginDescriptor(name = "Revenant Ether Counter")
-public class RevenantEtherCounterPlugin extends Plugin {
+@PluginDescriptor(
+    name = "Revenant Ether Counter"
+)
+public class RevenantEtherCounterPlugin extends Plugin
+{
 
     @Inject
     private Client client;
@@ -23,29 +26,30 @@ public class RevenantEtherCounterPlugin extends Plugin {
     private RevenantEtherCounterConfig config;
 
     @Override
-    protected void startUp() throws Exception {
+    protected void startUp() throws Exception
+    {
         log.debug("Example started!");
     }
 
     @Override
-    protected void shutDown() throws Exception {
+    protected void shutDown() throws Exception
+    {
         log.debug("Example stopped!");
     }
 
     @Subscribe
-    public void onGameStateChanged(GameStateChanged gameStateChanged) {
-        if (gameStateChanged.getGameState() == GameState.LOGGED_IN) {
+    public void onGameStateChanged(GameStateChanged gameStateChanged)
+    {
+        if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
+        {
             client.addChatMessage(
-                ChatMessageType.GAMEMESSAGE,
-                "",
-                "Example says " + config.greeting(),
-                null
-            );
+                ChatMessageType.GAMEMESSAGE, "", "Example says " + config.greeting(), null);
         }
     }
 
     @Provides
-    RevenantEtherCounterConfig provideConfig(ConfigManager configManager) {
+    RevenantEtherCounterConfig provideConfig(ConfigManager configManager)
+    {
         return configManager.getConfig(RevenantEtherCounterConfig.class);
     }
 }

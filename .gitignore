@@ -9,3 +9,5 @@ nbactions.xml
 nb-configuration.xml
 nbproject/
 .sdkmanrc
+.zed
+.DS_Store
