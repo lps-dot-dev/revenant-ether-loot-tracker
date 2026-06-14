@@ -43,7 +43,8 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
         {
             if (itemStack.getId() == ItemID.WILD_CAVE_SHARD)
             {
-                revenantEtherLooted += itemStack.getQuantity();
+                revenantEtherLooted = itemStack.getQuantity();
+                break;
             }
         }
 
