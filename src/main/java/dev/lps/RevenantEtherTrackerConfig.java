@@ -4,8 +4,8 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("revenantEtherCounter")
-public interface RevenantEtherCounterConfig extends Config
+@ConfigGroup("revenantEtherTracker")
+public interface RevenantEtherTrackerConfig extends Config
 {
     @ConfigItem(
         keyName = "totalRevenantEther",

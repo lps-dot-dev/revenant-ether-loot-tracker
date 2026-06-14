@@ -14,7 +14,7 @@ repositories {
 }
 
 def runeLiteVersion = 'latest.release'
-def pluginMainClass = 'dev.lps.RevenantEtherCounterPlugin'
+def pluginMainClass = 'dev.lps.RevenantEtherTrackerPlugin'
 
 dependencies {
 	compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion

@@ -16,14 +16,14 @@ import net.runelite.client.plugins.loottracker.LootReceived;
 @PluginDescriptor(
     name = "Revenant Ether Counter"
 )
-public class RevenantEtherCounterPlugin extends Plugin
+public class RevenantEtherTrackerPlugin extends Plugin
 {
 
     @Inject
     private ConfigManager configManager;
 
     @Inject
-    private RevenantEtherCounterConfig config;
+    private RevenantEtherTrackerConfig config;
 
     @Getter
     private long totalRevenantEther = 0L;
@@ -44,7 +44,7 @@ public class RevenantEtherCounterPlugin extends Plugin
         if (revenantEtherLooted > 0L)
         {
             totalRevenantEther += revenantEtherLooted;
-            configManager.setConfiguration("revenantEtherCounter", "totalEtherDropped", totalRevenantEther);
+            configManager.setConfiguration("revenantEtherTracker", "totalEtherDropped", totalRevenantEther);
         }
     }
 
@@ -61,8 +61,8 @@ public class RevenantEtherCounterPlugin extends Plugin
     }
 
     @Provides
-    RevenantEtherCounterConfig provideConfig(ConfigManager configManager)
+    RevenantEtherTrackerConfig provideConfig(ConfigManager configManager)
     {
-        return configManager.getConfig(RevenantEtherCounterConfig.class);
+        return configManager.getConfig(RevenantEtherTrackerConfig.class);
     }
 }
