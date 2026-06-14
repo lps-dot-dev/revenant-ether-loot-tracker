@@ -2,15 +2,15 @@ package dev.lps;
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.game.ItemStack;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.loottracker.LootReceived;
 
 @Slf4j
 @PluginDescriptor(
@@ -20,31 +20,44 @@ public class RevenantEtherCounterPlugin extends Plugin
 {
 
     @Inject
-    private Client client;
+    private ConfigManager configManager;
 
     @Inject
     private RevenantEtherCounterConfig config;
 
+    @Getter
+    private long totalRevenantEther = 0L;
+
+    @Subscribe
+    public void onLootReceived(LootReceived event)
+    {
+        long revenantEtherLooted = 0L;
+
+        for (ItemStack itemStack : event.getItems())
+        {
+            if (itemStack.getId() == ItemID.WILD_CAVE_SHARD)
+            {
+                revenantEtherLooted += itemStack.getQuantity();
+            }
+        }
+
+        if (revenantEtherLooted > 0L)
+        {
+            totalRevenantEther += revenantEtherLooted;
+            configManager.setConfiguration("revenantEtherCounter", "totalEtherDropped", totalRevenantEther);
+        }
+    }
+
     @Override
     protected void startUp() throws Exception
     {
-        log.debug("Example started!");
+        totalRevenantEther = config.totalRevenantEther();
     }
 
     @Override
     protected void shutDown() throws Exception
     {
-        log.debug("Example stopped!");
-    }
-
-    @Subscribe
-    public void onGameStateChanged(GameStateChanged gameStateChanged)
-    {
-        if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
-        {
-            client.addChatMessage(
-                ChatMessageType.GAMEMESSAGE, "", "Example says " + config.greeting(), null);
-        }
+        // Do nothing.
     }
 
     @Provides

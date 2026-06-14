@@ -8,12 +8,13 @@ import net.runelite.client.config.ConfigItem;
 public interface RevenantEtherCounterConfig extends Config
 {
     @ConfigItem(
-        keyName = "greeting",
-        name = "Welcome Greeting",
-        description = "The message to show to the user when they login"
+        keyName = "totalRevenantEther",
+        name = "Total Revenant Ether",
+        description = "The total amount of revenant ether received as drops",
+        hidden = true // Hides it from the plugin settings panel so users don't accidentally edit it
     )
-    default String greeting()
+    default long totalRevenantEther()
     {
-        return "Hello";
+        return 0L; // Default value if no data exists yet
     }
 }
