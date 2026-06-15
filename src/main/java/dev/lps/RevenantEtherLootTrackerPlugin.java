@@ -58,7 +58,7 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
     }
 
     @Subscribe
-    public void onScriptPostFire(ScriptPostFired event)
+    public void onScriptPostFired(ScriptPostFired event)
     {
         if (event.getScriptId() == ScriptID.COLLECTION_DRAW_LIST)
         {
@@ -140,5 +140,6 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
     private void updateConfig()
     {
         configManager.setConfiguration("revenantEtherLootTracker", "totalRevenantEtherLooted", totalRevenantEtherLooted);
+        log.debug(Long.toString(totalRevenantEtherLooted));
     }
 }
