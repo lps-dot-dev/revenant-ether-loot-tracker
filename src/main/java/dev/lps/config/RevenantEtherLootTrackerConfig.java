@@ -1,4 +1,4 @@
-package dev.lps;
+package dev.lps.config;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;

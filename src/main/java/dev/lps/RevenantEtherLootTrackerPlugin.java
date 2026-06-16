@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import com.google.inject.Provides;
 
+import dev.lps.config.RevenantEtherLootTrackerConfig;
 import dev.lps.ui.RevenantEtherLogOverlay;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
