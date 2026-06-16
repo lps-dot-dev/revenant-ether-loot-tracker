@@ -7,8 +7,11 @@ import com.google.inject.Provides;
 import dev.lps.ui.RevenantEtherLogOverlay;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.MessageNode;
 import net.runelite.api.ScriptID;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.ItemID;
@@ -20,6 +23,8 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.loottracker.LootReceived;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.util.QuantityFormatter;
+import net.runelite.client.util.Text;
 
 @Slf4j
 @PluginDescriptor(
@@ -29,6 +34,9 @@ import net.runelite.client.ui.overlay.OverlayManager;
 )
 public class RevenantEtherLootTrackerPlugin extends Plugin
 {
+    public static final long UNSIGNED_SHORT_MAX_VALUE = 0xFFFF;
+    private static final String TARGET_MESSAGE_PREFIX = "You have received ";
+    private static final String TARGET_MESSAGE_SUFFIX = " x Revenant ether.";
 
     @Getter
     @Inject
@@ -87,6 +95,23 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
         }
     }
 
+    @Subscribe
+    public void onChatMessage(ChatMessage chatMessage)
+    {
+        if (chatMessage.getType() != ChatMessageType.GAMEMESSAGE || totalRevenantEtherLooted <= UNSIGNED_SHORT_MAX_VALUE)
+        {
+            return;
+        }
+
+        MessageNode messageNode = chatMessage.getMessageNode();
+        String message = messageNode.getValue();
+        if (message.startsWith(TARGET_MESSAGE_PREFIX) && message.endsWith(TARGET_MESSAGE_SUFFIX))
+        {
+            String newMessage = TARGET_MESSAGE_PREFIX + QuantityFormatter.formatNumber(totalRevenantEtherLooted) + TARGET_MESSAGE_SUFFIX;
+            messageNode.setValue(newMessage);
+        }
+    }
+
     @Override
     protected void startUp() throws Exception
     {
@@ -123,7 +148,7 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
          * Safety check: If our custom tracker is already past the 16-bit limit,
          * we never need to trust or look at the collection log window ever again.
          */
-        if (totalRevenantEtherLooted >= 65535)
+        if (totalRevenantEtherLooted >= UNSIGNED_SHORT_MAX_VALUE)
         {
             return;
         }
@@ -155,6 +180,5 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
     private void updateConfig()
     {
         configManager.setConfiguration("revenantEtherLootTracker", "totalRevenantEtherLooted", totalRevenantEtherLooted);
-        log.debug(Long.toString(totalRevenantEtherLooted));
     }
 }

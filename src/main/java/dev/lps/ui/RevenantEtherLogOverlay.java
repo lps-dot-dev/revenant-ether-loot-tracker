@@ -35,7 +35,7 @@ public class RevenantEtherLogOverlay extends WidgetItemOverlay
          * If the custom tracker hasn't surpassed the maximum 16-bit capacity yet,
          * let the game's native UI display the itemQuantitys naturally and exit early.
          */
-        if (plugin.getConfig().hideRevenantEtherCollectionLogOverlay() || plugin.getTotalRevenantEtherLooted() <= 65535L)
+        if (plugin.getConfig().hideRevenantEtherCollectionLogOverlay() || plugin.getTotalRevenantEtherLooted() <= RevenantEtherLootTrackerPlugin.UNSIGNED_SHORT_MAX_VALUE)
         {
             return;
         }
