@@ -10,20 +10,26 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.GameState;
 import net.runelite.api.MessageNode;
 import net.runelite.api.ScriptID;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.ItemID;
 import net.runelite.api.widgets.Widget;
+import net.runelite.client.chat.ChatMessageManager;
+import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemStack;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.loottracker.LootReceived;
+import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.QuantityFormatter;
 
 @Slf4j
@@ -41,6 +47,9 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
     @Getter
     @Inject
     private Client client;
+
+    @Inject
+    private ChatMessageManager chatMessageManager;
 
     @Inject
     private ConfigManager configManager;
@@ -67,6 +76,11 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
     @Override
     protected void startUp() throws Exception
     {
+        /**
+         * It is possible for players to install plugins while logged out, so we will attempt to send
+         * the warning message on startup/install but will abort if the player is not logged in.
+         */
+        sendWarningMessageIfNecessary(client.getGameState());
         totalRevenantEtherLooted = config.totalRevenantEtherLooted();
         overlayManager.add(revenantEtherLogOverlay);
     }
@@ -99,6 +113,13 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
             String newMessage = TARGET_MESSAGE_PREFIX + QuantityFormatter.formatNumber(totalRevenantEtherLooted) + TARGET_MESSAGE_SUFFIX;
             messageNode.setValue(newMessage);
         }
+    }
+
+    @Subscribe
+    public void onGameStateChanged(GameStateChanged gameStateChanged)
+    {
+        // This is a catch-all in the event that the player did not receive the warning message on startup/install
+        sendWarningMessageIfNecessary(gameStateChanged.getGameState());
     }
 
     @Subscribe
@@ -135,6 +156,25 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
             {
                 // Do nothing.
             }
+        }
+    }
+
+    /**
+     * Sends a warning message on installion about the need to sync the internal tracker with the collection log.
+     * It is possible for users to install the plugin while logged out, so we must verify the game state before
+     * attempting to send the warning messages.
+     *
+     * @param gameState
+     */
+    private void sendWarningMessageIfNecessary(GameState gameState)
+    {
+        if (
+            config.hasSeenCollectionLogSyncWarning() == false
+            && gameState == GameState.LOGGED_IN
+        )
+        {
+            chatMessageManager.queue(QueuedMessage.builder().type(ChatMessageType.GAMEMESSAGE).runeLiteFormattedMessage(ColorUtil.wrapWithColorTag("Revenant Ether Loot Tracker Plugin: Please open the revenant section of your collection log to sync the tracker! Failure to do so will result in any progress since installion being overwritten!", ColorScheme.PROGRESS_ERROR_COLOR)).build());
+            configManager.setConfiguration("revenantEtherLootTracker", "hasSeenCollectionLogSyncWarning", true);
         }
     }
 

@@ -19,10 +19,21 @@ public interface RevenantEtherLootTrackerConfig extends Config
     }
 
     @ConfigItem(
+        keyName = "hasSeenCollectionLogSyncWarning",
+        name = "Seen Collection Log Sync Warning",
+        description = "Whether or not the player has seen the warning about syncing the internal tracker with the collection log",
+        hidden = true
+    )
+    default boolean hasSeenCollectionLogSyncWarning()
+    {
+        return false;
+    }
+
+    @ConfigItem(
         keyName = "totalRevenantEtherLooted",
         name = "Total Revenant Ether Looted",
         description = "The total amount of revenant ether received as drops",
-        hidden = true // Hides it from the plugin settings panel so users don't accidentally edit it
+        hidden = true
     )
     default long totalRevenantEtherLooted()
     {

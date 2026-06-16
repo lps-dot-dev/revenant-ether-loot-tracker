@@ -2,6 +2,8 @@
 
 An RuneLite plugin designed to track and display how much **Revenant Ether** the player has received as loot well after the official limit of `65535` is exceeded.
 
+*NOTE: If you are planning on using this plugin, please open your collection log to the revenant section to sync the tracker after installation! Failure to do so will result in any progress since installion being overwritten after syncing with the collection log!*
+
 #### But Why Tho?
 
 This plugin was made for people like me who just like seeing number go up. Also I participate in bingo events where revenant ether is a form of contribution, so this plugin will make it easier for me and others with max revenant ether on their collection logs to contribute.
