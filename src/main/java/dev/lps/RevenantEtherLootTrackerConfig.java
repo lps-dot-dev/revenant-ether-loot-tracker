@@ -8,6 +8,17 @@ import net.runelite.client.config.ConfigItem;
 public interface RevenantEtherLootTrackerConfig extends Config
 {
     @ConfigItem(
+        keyName = "hideRevenantEtherCollectionLogOverlay",
+        name = "Hide Collection Log Overlay",
+        description = "This will dictate whether this custom revenant ether counter will overlay over the revenant ether item slot shown in the collection log",
+        position = 1
+    )
+    default boolean hideRevenantEtherCollectionLogOverlay()
+    {
+        return false;
+    }
+
+    @ConfigItem(
         keyName = "totalRevenantEtherLooted",
         name = "Total Revenant Ether Looted",
         description = "The total amount of revenant ether received as drops",

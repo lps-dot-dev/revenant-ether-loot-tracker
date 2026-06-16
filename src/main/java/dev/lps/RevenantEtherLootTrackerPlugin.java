@@ -1,7 +1,11 @@
 package dev.lps;
 
-import com.google.inject.Provides;
 import javax.inject.Inject;
+
+import com.google.inject.Provides;
+
+import dev.lps.ui.RevenantEtherLogOverlay;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.ScriptID;
@@ -15,6 +19,7 @@ import net.runelite.client.game.ItemStack;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.loottracker.LootReceived;
+import net.runelite.client.ui.overlay.OverlayManager;
 
 @Slf4j
 @PluginDescriptor(
@@ -25,6 +30,7 @@ import net.runelite.client.plugins.loottracker.LootReceived;
 public class RevenantEtherLootTrackerPlugin extends Plugin
 {
 
+    @Getter
     @Inject
     private Client client;
 
@@ -32,8 +38,16 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
     private ConfigManager configManager;
 
     @Inject
+    private OverlayManager overlayManager;
+
+    @Getter
+    @Inject
     private RevenantEtherLootTrackerConfig config;
 
+    @Inject
+    private RevenantEtherLogOverlay revenantEtherLogOverlay;
+
+    @Getter
     private long totalRevenantEtherLooted = 0L;
 
     @Subscribe
@@ -77,12 +91,13 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
     protected void startUp() throws Exception
     {
         totalRevenantEtherLooted = config.totalRevenantEtherLooted();
+        overlayManager.add(revenantEtherLogOverlay);
     }
 
     @Override
     protected void shutDown() throws Exception
     {
-        // Do nothing.
+        overlayManager.remove(revenantEtherLogOverlay);
     }
 
     @Provides
