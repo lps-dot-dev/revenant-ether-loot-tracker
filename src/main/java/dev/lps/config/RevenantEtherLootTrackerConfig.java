@@ -7,6 +7,10 @@ import net.runelite.client.config.ConfigItem;
 @ConfigGroup("revenantEtherLootTracker")
 public interface RevenantEtherLootTrackerConfig extends Config
 {
+    public final static String CONFIG_GROUP = "revenantEtherLootTracker";
+    public final static String HAS_SEEN_COLLECTION_LOG_SYNC_WARNING_KEY = "hasSeenCollectionLogSyncWarning";
+    public final static String TOTAL_REVENANT_ETHER_LOOTED_KEY = "totalRevenantEtherLooted";
+
     @ConfigItem(
         keyName = "displayRevenantEtherCollectionLogOverlay",
         name = "Display Collection Log Overlay",
@@ -19,7 +23,7 @@ public interface RevenantEtherLootTrackerConfig extends Config
     }
 
     @ConfigItem(
-        keyName = "hasSeenCollectionLogSyncWarning",
+        keyName = HAS_SEEN_COLLECTION_LOG_SYNC_WARNING_KEY,
         name = "Seen Collection Log Sync Warning",
         description = "Whether or not the player has seen the warning about syncing the internal tracker with the collection log",
         hidden = true
@@ -30,7 +34,7 @@ public interface RevenantEtherLootTrackerConfig extends Config
     }
 
     @ConfigItem(
-        keyName = "totalRevenantEtherLooted",
+        keyName = TOTAL_REVENANT_ETHER_LOOTED_KEY,
         name = "Total Revenant Ether Looted",
         description = "The total amount of revenant ether received as drops",
         hidden = true

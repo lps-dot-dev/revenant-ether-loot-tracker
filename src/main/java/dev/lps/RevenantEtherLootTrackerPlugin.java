@@ -23,6 +23,7 @@ import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemStack;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -116,6 +117,23 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
     }
 
     @Subscribe
+    public void onConfigChanged(ConfigChanged event)
+    {
+        /**
+         * This will listen for any changes to the tracker in the configuration and apply them to the
+         * internal tracker immediately. This will fix the issue with resetting the plugin not being
+         * reflected in the UI.
+         */
+        if (
+            event.getGroup().equals(RevenantEtherLootTrackerConfig.CONFIG_GROUP)
+            && event.getKey().equals(RevenantEtherLootTrackerConfig.TOTAL_REVENANT_ETHER_LOOTED_KEY)
+        )
+        {
+            totalRevenantEtherLooted = config.totalRevenantEtherLooted();
+        }
+    }
+
+    @Subscribe
     public void onGameStateChanged(GameStateChanged gameStateChanged)
     {
         // This is a catch-all in the event that the player did not receive the warning message on startup/install
@@ -174,7 +192,7 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
         )
         {
             chatMessageManager.queue(QueuedMessage.builder().type(ChatMessageType.GAMEMESSAGE).runeLiteFormattedMessage(ColorUtil.wrapWithColorTag("Revenant Ether Loot Tracker Plugin: Please open the revenant section of your collection log to sync the tracker! Failure to do so will result in any progress since installion being overwritten!", ColorScheme.PROGRESS_ERROR_COLOR)).build());
-            configManager.setConfiguration("revenantEtherLootTracker", "hasSeenCollectionLogSyncWarning", true);
+            configManager.setConfiguration(RevenantEtherLootTrackerConfig.CONFIG_GROUP, RevenantEtherLootTrackerConfig.HAS_SEEN_COLLECTION_LOG_SYNC_WARNING_KEY, true);
         }
     }
 
@@ -227,6 +245,6 @@ public class RevenantEtherLootTrackerPlugin extends Plugin
 
     private void updateConfig()
     {
-        configManager.setConfiguration("revenantEtherLootTracker", "totalRevenantEtherLooted", totalRevenantEtherLooted);
+        configManager.setConfiguration(RevenantEtherLootTrackerConfig.CONFIG_GROUP, RevenantEtherLootTrackerConfig.TOTAL_REVENANT_ETHER_LOOTED_KEY, totalRevenantEtherLooted);
     }
 }
